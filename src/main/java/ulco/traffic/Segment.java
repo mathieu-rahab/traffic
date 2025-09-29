@@ -17,6 +17,11 @@ public class Segment {
 
     public void run(Double time) {
         _vehicle.setDistance(_vehicle.getDistance() + (time * _speed));
+        if (vehiculeAtEnd(_vehicle.getId()) && _nextSegment != null) {
+            _vehicle.setDistance(0.0);
+            _nextSegment.addVehicle(_vehicle);
+            _vehicle = null;
+        }
 
     }
 
@@ -28,9 +33,14 @@ public class Segment {
         return _speed;
     }
 
+    public void setNextSegment(Segment segment){
+        _nextSegment = segment;
+    }
+
 
     private int _length;
     private int _speed;
     private Vehicle _vehicle;
+    private Segment _nextSegment;
 
 }
