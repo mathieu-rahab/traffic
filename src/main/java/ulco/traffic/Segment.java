@@ -20,6 +20,10 @@ public class Segment {
 
     }
 
+    public boolean vehiculeAtEnd(String id){
+        return hasVehicule(id) && _vehicle.getDistance() >= _length;
+    }
+
     public int getSpeed(){
         return _speed;
     }
