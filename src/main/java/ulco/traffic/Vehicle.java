@@ -31,12 +31,19 @@ public class Vehicle {
         return _distance;
     }
 
+    public double getSize(){
+        return _size;
+    }
+
 
 
     private Double _distance;
     private int _speed;
     private String _id;
     private static int _idClass = 1;
+    private double _size = SIZE_VEHICLE;
+
+    private static final double SIZE_VEHICLE = 4.5;
 
 
 }

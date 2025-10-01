@@ -45,7 +45,7 @@ public void run(Double time) {
         v.setDistance(v.getDistance() + (time * v.getSpeed()));
         if (vehiculeAtEnd(v.getId())) {
             v.setSpeed(0);
-            if (_typeEnd == TypeEnd.STOP_SIGN ) {
+            if (_typeEnd == TypeEnd.STOP_SIGN || _typeEnd == TypeEnd.YELDING_SIGN) {
                 double waitingTime = _waitingTimes.getOrDefault(v.getId(), 0.0) + time;
                 _waitingTimes.put(v.getId(), waitingTime);
             }
@@ -120,6 +120,18 @@ public void run(Double time) {
             }
         }
         return false;
+    }
+
+    public double getTotalJamSize() {
+        if( _waitingTimes.size() < 2) {
+            return 0.0;
+        }
+        double size = 0.0;
+        for (String id : _waitingTimes.keySet()) {
+            Vehicle v = getVehicle(id);
+            size += v.getSize();
+        }
+        return size;
     }
 
     private int _length;
