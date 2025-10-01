@@ -1,5 +1,8 @@
 package ulco.traffic;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class Segment {
     public Segment(int length, int speed) {
         _length = length;
@@ -8,25 +11,31 @@ public class Segment {
 
     public void addVehicle(Vehicle vehicle) {
         vehicle.setSpeed(_speed);
-        _vehicle = vehicle;
+        _vehicles.add(vehicle);
     }
 
     public Boolean hasVehicule(String id){
-        return _vehicle != null &&  _vehicle.getId() == id;
+        for (Vehicle v : _vehicles) {
+            if (v.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void run(Double time) {
-        _vehicle.setDistance(_vehicle.getDistance() + (time * _speed));
-        if (vehiculeAtEnd(_vehicle.getId()) && _nextSegment != null) {
-            _vehicle.setDistance(0.0);
-            _nextSegment.addVehicle(_vehicle);
-            _vehicle = null;
-        }
-
+    for (Vehicle v : _vehicles) {
+        v.setDistance(v.getDistance() + (time * _speed));
     }
+    while (!_vehicles.isEmpty() && vehiculeAtEnd(_vehicles.peek().getId()) && _nextSegment != null) {
+        Vehicle v = _vehicles.poll();
+        v.setDistance(0.0);
+        _nextSegment.addVehicle(v);
+    }
+}
 
     public boolean vehiculeAtEnd(String id){
-        return hasVehicule(id) && _vehicle.getDistance() >= _length;
+        return hasVehicule(id) && getVehicle(id).getDistance() >= _length;
     }
 
     public int getSpeed(){
@@ -37,10 +46,18 @@ public class Segment {
         _nextSegment = segment;
     }
 
+    public Vehicle getVehicle(String id){
+        for (Vehicle v : _vehicles) {
+            if (v.getId().equals(id)) {
+                return v;
+            }
+        }
+        return null;
+    }
 
     private int _length;
     private int _speed;
-    private Vehicle _vehicle;
+    private Queue<Vehicle> _vehicles = new LinkedList<>();
     private Segment _nextSegment;
 
 }
