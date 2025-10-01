@@ -54,6 +54,13 @@ public void run(Double time) {
     // Traiter les véhicules en tête qui peuvent sortir
     while (!_vehicles.isEmpty() && vehiculeAtEnd(_vehicles.peek().getId()) && _nextSegment != null) {
         Vehicle v = _vehicles.peek();
+        if(_typeEnd == TypeEnd.YELDING_SIGN) {
+            if (_nextSegment.hasVehiculeFirstHendredMeters() == false) {
+                moveVehicleToNextSegment(v.getId());
+            } else {
+                break;
+            }
+        } else
         if (_typeEnd == TypeEnd.STOP_SIGN) {
             double waitingTime = _waitingTimes.getOrDefault(v.getId(), 0.0);
             if (waitingTime >= 5.0 && _nextSegment.getLastVehiculeEntryTime() >= 10) {
@@ -106,6 +113,15 @@ public void run(Double time) {
         return _lastVehiculeEntryTime;
     }
 
+    public boolean hasVehiculeFirstHendredMeters() {
+        for (Vehicle v : _vehicles) {
+            if (v.getDistance() <= 100) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private int _length;
     private int _speed;
     private Queue<Vehicle> _vehicles = new LinkedList<>();
@@ -116,6 +132,7 @@ public void run(Double time) {
 
     public static enum TypeEnd {
         STOP_SIGN,
+        YELDING_SIGN,
         NONE
     }
     public static int INIT_LAST_VEHICULE_ENTRY_TIME = 100;
